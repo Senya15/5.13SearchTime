@@ -1,45 +1,105 @@
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args) {
-        String[] letter = {"A","B","E","K","M","H","O","P","C","T","Y","X"};
-        Arrays.sort(letter);
-        Set<String> arrNumberSame = new HashSet<>();
-        Set<String> arrNumberLettersSame = new HashSet<>();
+
+    static long startTimer;
+    static long endTimer;
+    static String s;
+
+    public static void main(String[] args) throws InterruptedException {
+        String[] lettersMassive = {"A", "B", "E", "K", "M", "H", "O", "P", "C", "T", "Y", "X"};
+        Arrays.sort(lettersMassive);
+        Set<String> hashSetNumber = new HashSet<>();
         //одинаковые буквы
-        for(String a123: letter) {
-            for(int reg = 1; reg <= 199; reg++) {
-                for(int j = 1; j <= 10; j ++) {
-                    arrNumberLettersSame.add(String.format("%s%03d%s%s%02d",a123,j,a123,a123,reg));
+        for (String letter : lettersMassive) {
+            for (int regNumber = 1; regNumber <= 199; regNumber++) {
+                for (int j = 1; j <= 10; j++) {
+                    hashSetNumber.add(String.format("%s%03d%s%s%02d", letter, j, letter, letter, regNumber));
                 }
             }
         }
         //одинаковые цифры
-        for(int i = 111; i <= 999; i += 111) {
-            for (String a1 : letter) {
-                for (String a2 : letter) {
-                    for (String a3 : letter) {
-                        for (int reg = 1; reg <= 199; reg++) {
-                            arrNumberSame.add(String.format("%s%03d%s%s%02d", a1, i, a2, a3, reg));
+        for (int i = 111; i <= 999; i += 111) {
+            for (String letter1 : lettersMassive) {
+                for (String letter2 : lettersMassive) {
+                    for (String letter3 : lettersMassive) {
+                        for (int regNumber = 1; regNumber <= 199; regNumber++) {
+                            hashSetNumber.add(String.format("%s%03d%s%s%02d", letter1, i, letter2, letter3, regNumber));
                         }
                     }
                 }
             }
         }
-        System.out.println("Колличество номеров с одинаковыми буквами");
-        System.out.println(arrNumberLettersSame.size());
-        System.out.println("Колличество номеров с одинаковыми цифрами");
-        System.out.println(arrNumberSame.size());
-        Set<String > allNumbers = new HashSet<>(){{
-           addAll(arrNumberLettersSame);
-           addAll(arrNumberSame);
-        }};
-        System.out.println("Вместе");
-        System.out.println(allNumbers.size());
-//        ArrayList<String> arrNum = new ArrayList<>(arrNumberSame);
+        List<String> arrNumber = new ArrayList<>(hashSetNumber); //Создание листа с номерами машин
+        Set<String> treeSetNumber = new TreeSet<>(hashSetNumber); //Создание TreeSet с номерами
+
+        Scanner scanner = new Scanner(System.in);
+
+
+        for (; ; ) {
+            System.out.println("Введите номер машины");
+            s = scanner.nextLine();
+            //Поиск по ArrayList
+            System.out.print("Запуск поиска по ArrayList...");
+            startTimer = System.nanoTime();
+            if (arrNumber.contains(s)) {
+                endTimer = System.nanoTime();
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println("Поиск завершён!");
+                System.out.println("номер найден, поиск занял " + (endTimer - startTimer) + " нс");
+                TimeUnit.SECONDS.sleep(2);
+            } else {
+                endTimer = System.nanoTime();
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println("Поиск завершён!");
+                System.out.println("номер не найден, поиск занял " + (endTimer - startTimer) + " нс");
+                TimeUnit.SECONDS.sleep(2);
+            }
+
+            Collections.sort(arrNumber);
+            //Бинарный поиск по сортированному ArrayList
+            System.out.print("Запуск поиска по отсортированному ArrayList бинарным способом...");
+            startTimer = System.nanoTime();
+            if (Collections.binarySearch(arrNumber, s) >= 0) {
+                endTimer = System.nanoTime();
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println("Поиск завершён!");
+                System.out.println("номер найден, поиск занял " + (endTimer - startTimer) + " нс");
+                TimeUnit.SECONDS.sleep(2);
+            } else {
+                endTimer = System.nanoTime();
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println("Поиск завершён!");
+                System.out.println("номер не найден, поиск занял " + (endTimer - startTimer) + " нс");
+                TimeUnit.SECONDS.sleep(2);
+            }
+
+            //Поиск по HashSet
+            System.out.print("Запуск поиска по HashSet...");
+            searchSet(hashSetNumber);
+
+            //Поиск по TreeSet
+            System.out.print("Запуск поиска по TreeSet...");
+            searchSet(treeSetNumber);
+        }
+    }
+
+    static void searchSet(Set<String> set) throws InterruptedException {
+        startTimer = System.nanoTime();
+        if (set.contains(s)) {
+            endTimer = System.nanoTime();
+            TimeUnit.SECONDS.sleep(2);
+            System.out.println("Поиск завершён!");
+            System.out.println("номер найден, поиск занял " + (endTimer - startTimer) + " нс");
+            TimeUnit.SECONDS.sleep(2);
+        } else {
+            endTimer = System.nanoTime();
+            TimeUnit.SECONDS.sleep(2);
+            System.out.println("Поиск завершён!");
+            System.out.println("номер не найден, поиск занял " + (endTimer - startTimer) + " нс");
+            TimeUnit.SECONDS.sleep(2);
+        }
     }
 }
